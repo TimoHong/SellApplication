@@ -1,22 +1,12 @@
-package com.TimoProject.SellApp.dataobject;
+package com.TimoProject.SellApp.vo;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import java.util.Date;
-
-@Entity
-public class ProductCategory {
-    @Id
+public class ProductCategoryVO {
     private Integer categoryId;
 
     private String categoryName;
 
     private Integer categoryType;
 
-    private Date createTime;
-
-    private Date updateTime;
 
     public Integer getCategoryId() {
         return categoryId;
@@ -40,22 +30,6 @@ public class ProductCategory {
 
     public void setCategoryType(Integer categoryType) {
         this.categoryType = categoryType;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
     }
 
     @Override

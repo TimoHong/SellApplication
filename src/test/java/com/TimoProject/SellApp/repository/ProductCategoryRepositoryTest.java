@@ -9,15 +9,25 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
 
-@Transactional
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ProductCategoryRepositoryTest {
-    @Autowired
-    private ProductCategoryRepository repository;
-    @Test
-    public void findOneTest(){
-        ProductCategory productCategory = repository.getById(1);
-        System.out.println(productCategory.toString());
-    }
+//    @Autowired
+//    private ProductCategoryRepository repository;
+//    @Transactional
+//    @Test
+//    public void findOneTest(){
+//        ProductCategory productCategory = repository.getOne(1);
+//        System.out.println(productCategory.toString());
+//    }
+//    @Transactional
+//    @Test
+//    public void saveTest(){
+//        ProductCategory productCategory = new ProductCategory();
+//        productCategory.setCategoryName("Women Choice");
+//        productCategory.setCategoryType(2);
+//        productCategory.setCategoryId(2);
+//        repository.save(productCategory);
+//    }
 }
