@@ -1,7 +1,6 @@
 package com.TimoProject.SellApp.controller;
 
-import com.TimoProject.SellApp.dataobject.ProductCategory;
-import com.TimoProject.SellApp.service.ProductCategoryService;
+import com.TimoProject.SellApp.service.impl.CategoryServiceImpl;
 import com.TimoProject.SellApp.vo.ProductCategoryVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +12,7 @@ import java.util.List;
 public class ProductCategoryController {
 
     @Autowired
-    protected ProductCategoryService service;
+    protected CategoryServiceImpl service;
 
     @GetMapping(value = "/all")
     public List<ProductCategoryVO> findAllProductCategories(){

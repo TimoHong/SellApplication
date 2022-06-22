@@ -1,8 +1,9 @@
-package com.TimoProject.SellApp.service;
+package com.TimoProject.SellApp.service.impl;
 
 
 import com.TimoProject.SellApp.dataobject.ProductCategory;
 import com.TimoProject.SellApp.repository.ProductCategoryRepository;
+import com.TimoProject.SellApp.service.CategoryService;
 import com.TimoProject.SellApp.vo.ProductCategoryVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class ProductCategoryService {
+public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
     protected ProductCategoryRepository dao;
@@ -47,10 +48,23 @@ public class ProductCategoryService {
     }
 
 
-    public void createProductCategories(List<ProductCategoryVO> list){
-
-
-
+    @Override
+    public ProductCategory findOne(Integer categoryId) {
+        return dao.getOne(categoryId);
     }
 
+    @Override
+    public List<ProductCategory> findAll() {
+        return dao.findAll();
+    }
+
+    @Override
+    public List<ProductCategory> findByCategoryTypeIn(List<Integer> categoryTypeList) {
+        return dao.findByCategoryTypeIn(categoryTypeList);
+    }
+
+    @Override
+    public ProductCategory save(ProductCategory productCategory) {
+        return dao.save(productCategory);
+    }
 }
