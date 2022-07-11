@@ -1,19 +1,26 @@
 package com.TimoProject.Sell.service;
 
 import com.TimoProject.Sell.dataobject.ProductInfo;
+import com.TimoProject.Sell.dto.CartDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface ProductService {
-    ProductInfo findOne(Integer productId);
+    ProductInfo findOne(String productId);
 
     List<ProductInfo> findUpAll();
 
     public Page<ProductInfo> findAll(Pageable pageable);
 
     ProductInfo save(ProductInfo productInfo);
+    void increaseStock(List<CartDTO> cartDTOList);
+    void decreaseStock(List<CartDTO> cartDTOList);
+
+
+
+
 
 
 }

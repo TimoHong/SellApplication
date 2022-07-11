@@ -18,7 +18,7 @@ public class ProductInfoController {
         return service.findByProductStatus();
     }
     @PostMapping(value = "/create")
-    public  Integer createProductInfo(@RequestBody ProductInfoVO productInfoVO){
+    public String createProductInfo(@RequestBody ProductInfoVO productInfoVO){
         return service.createProductInfo(productInfoVO);
     }
 }

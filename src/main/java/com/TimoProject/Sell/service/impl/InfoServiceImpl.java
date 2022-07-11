@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.lang.constant.Constable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,13 +18,11 @@ import java.util.List;
 public class InfoServiceImpl implements ProductService {
     @Autowired
     protected ProductInfoRepository dao;
-
+    
     @Override
-    public ProductInfo findOne(Integer productId) {
-        return dao.getOne(String.valueOf(productId));
+    public ProductInfo findOne(String productId) {
+        return dao.getOne(productId);
     }
-
-
 
     @Override
     public List<ProductInfo> findUpAll() {
@@ -38,7 +37,7 @@ public class InfoServiceImpl implements ProductService {
     public ProductInfo save(ProductInfo entity){
         return dao.save(entity);
     }
-    public Integer createProductInfo(ProductInfoVO vo){
+    public String createProductInfo(ProductInfoVO vo){
         ProductInfo entity = new ProductInfo();
         entity.setProductPrice(vo.getProductPrice());
         entity.setProductDescription(vo.getProductDescription());

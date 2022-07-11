@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 @Data
 public class ProductInfo {
     @Id
-    private Integer productId;
+    private String productId;
 
     private String productName;
 
