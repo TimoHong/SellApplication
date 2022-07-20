@@ -23,12 +23,12 @@ public class OrderMasterRepositoryTest {
     @Test
     public void saveTest(){
         OrderMaster orderMaster = new OrderMaster();
-        orderMaster.setOrderId("123456");
-        orderMaster.setBuyerName("Test");
-        orderMaster.setBuyerPhone("123456789123");
+        orderMaster.setOrderId("2505632");
+        orderMaster.setBuyerName("Timothy");
+        orderMaster.setBuyerPhone("598745632145");
         orderMaster.setBuyerAddress("HK");
         orderMaster.setBuyerOpenid(OPENID);
-        orderMaster.setOrderAmount(new BigDecimal(2.3));
+        orderMaster.setOrderAmount(new BigDecimal(500.0));
 
         OrderMaster result= dao.save(orderMaster);
         Assert.assertNotNull(result);

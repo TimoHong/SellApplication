@@ -87,8 +87,21 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDTO findOne(String orderId) {
-        return null;
+    public OrderDTO findOne(String orderId) {  OrderMaster orderMaster = orderMasterRepository.findById(orderId).orElse(null);
+        if (orderMaster == null) {
+            throw new SellException(ResultEnum.ORDER_NOT_EXIST);
+        }
+
+        List<OrderDetail> orderDetailList = orderDetailRepository.findByOrderId(orderId);
+        if (CollectionUtils.isEmpty(orderDetailList)) {
+            throw new SellException(ResultEnum.ORDERDETAIL_NOT_EXIST);
+        }
+
+        OrderDTO orderDTO = new OrderDTO();
+        BeanUtils.copyProperties(orderMaster, orderDTO);
+        orderDTO.setOrderDetailList(orderDetailList);
+
+        return orderDTO;
     }
 
     @Override
@@ -108,8 +121,9 @@ public class OrderServiceImpl implements OrderService {
         }
 
         //configure order
-        orderMaster.setOrderStatus(OrderStatusEnum.CANCEL.getCode());
-       OrderMaster updateResult =  orderMasterRepository.save(orderMaster);
+        orderDTO.setOrderStatus(OrderStatusEnum.CANCEL.getCode());
+        BeanUtils.copyProperties(orderDTO, orderMaster);
+        OrderMaster updateResult = orderMasterRepository.save(orderMaster);
        if(updateResult == null){
            log.error("cancel order: update fail, orderMaster={}",orderMaster);
            throw new SellException(ResultEnum.ORDER_UPDATE_FAIL);
@@ -121,7 +135,7 @@ public class OrderServiceImpl implements OrderService {
         }
         List<CartDTO> cartDTOList = orderDTO.getOrderDetailList().stream()
                         .map(e -> new CartDTO(e.getProductId(),e.getProductQuantity()))
-                                .collect(Collectors.toList());
+                        .collect(Collectors.toList());
         productService.increaseStock(cartDTOList);
 
         // if is paid already, need to refund
@@ -141,4 +155,6 @@ public class OrderServiceImpl implements OrderService {
     public OrderDTO paid(OrderDTO orderDTO) {
         return null;
     }
+
+
 }

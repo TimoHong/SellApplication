@@ -22,7 +22,7 @@ public class ProductCategoryRepositoryTest {
     @Transactional
     @Test
     public void findOneTest(){
-        ProductCategory productCategory = repository.getOne(1);
+        ProductCategory productCategory = repository.findById(1).orElse(null);
         System.out.println(productCategory.toString());
     }
     @Test

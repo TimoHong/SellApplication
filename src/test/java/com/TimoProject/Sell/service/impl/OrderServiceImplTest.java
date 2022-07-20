@@ -27,7 +27,7 @@ public class OrderServiceImplTest {
 
     private final String BUYER_OPENID = "1101110";
 
-    private final String ORDER_ID = "1658126606886706051";
+    private final String ORDER_ID = "1658345457417583248";
 
     @Test
     public void create() throws Exception {
@@ -38,7 +38,6 @@ public class OrderServiceImplTest {
         orderDTO.setBuyerPhone("123456789012");
         orderDTO.setBuyerOpenid(BUYER_OPENID);
 
-        //购物车
         List<OrderDetail> orderDetailList = new ArrayList<>();
         OrderDetail o1 = new OrderDetail();
         o1.setProductId("1234");
@@ -56,5 +55,25 @@ public class OrderServiceImplTest {
         OrderDTO orderDTO = orderService.findOne(ORDER_ID);
         OrderDTO result = orderService.cancel(orderDTO);
         Assert.assertEquals(OrderStatusEnum.CANCEL.getCode(),result.getOrderStatus());
+    }
+
+    @Test
+    public void testCreate() {
+    }
+
+    @Test
+    public void findOne() {
+    }
+
+    @Test
+    public void testCancel() {
+    }
+
+    @Test
+    public void finish() {
+    }
+
+    @Test
+    public void paid() {
     }
 }

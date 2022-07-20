@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 @SpringBootTest
 public class ProductServiceImplTest extends ProductInfo  {
     @Autowired
-    private ProductServiceImpl infoService;
+    private ProductServiceImpl ProductService;
     private ProductInfoRepository dao;
 
 
@@ -22,15 +22,15 @@ public class ProductServiceImplTest extends ProductInfo  {
     @Test
     public void testCreateProductInfo() {
         ProductInfo productInfo = new ProductInfo();
-        productInfo.setProductId("1236");
-        productInfo.setProductName("steak1");
-        productInfo.setProductPrice(new BigDecimal(1199.5));
+        productInfo.setProductId("1235");
+        productInfo.setProductName("chips");
+        productInfo.setProductPrice(new BigDecimal(1200.0));
         productInfo.setProductStock(100);
-        productInfo.setProductDescription("rare is the best");
-        productInfo.setProductIcon("http://exmaple.jpg");
+        productInfo.setProductDescription("best seller");
+        productInfo.setProductIcon("http://chips.jpg");
         productInfo.setProductStatus(0);
         productInfo.setCategoryType(2);
-        ProductInfo newOne = infoService.save(productInfo);
+        ProductInfo newOne = ProductService.save(productInfo);
 
 
 
