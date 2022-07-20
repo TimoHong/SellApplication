@@ -4,6 +4,7 @@ import com.TimoProject.Sell.dataobject.OrderDetail;
 import com.TimoProject.Sell.enums.OrderStatusEnum;
 import com.TimoProject.Sell.enums.PayStatusEnum;
 import lombok.Data;
+import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -30,5 +31,5 @@ public class OrderDTO {
 
     private Date updateTime;
 
-    private List<OrderDetail> orderDetailList;
+    List<OrderDetail> orderDetailList;
 }

@@ -17,36 +17,6 @@ public class CategoryServiceImpl implements CategoryService {
     @Autowired
     protected ProductCategoryRepository dao;
 
-    public List<ProductCategoryVO> findAllProductCategories() {
-
-        List<ProductCategory> productCategories = dao.findAll();
-
-//        for (int i = 0; i < productCategories.size(); i++) {
-//            ProductCategory productCategory = productCategories.get(i);
-//        }
-
-        List<ProductCategoryVO> results = new ArrayList<>();
-        for (ProductCategory productCategory : productCategories) {
-            ProductCategoryVO vo = new ProductCategoryVO();
-            vo.setCategoryId(productCategory.getCategoryId());
-            vo.setCategoryName(productCategory.getCategoryName());
-            vo.setCategoryType(productCategory.getCategoryType());
-            results.add(vo);
-        }
-
-        return results;
-    }
-
-
-    public Integer createProductCategory(ProductCategoryVO vo){
-        ProductCategory entity = new ProductCategory();
-        entity.setCategoryId(vo.getCategoryId());
-        entity.setCategoryName(vo.getCategoryName());
-        entity.setCategoryType(vo.getCategoryType());
-        ProductCategory newOne = dao.save(entity);
-        return newOne.getCategoryId();
-    }
-
 
     @Override
     public ProductCategory findOne(Integer categoryId) {
@@ -66,5 +36,32 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public ProductCategory save(ProductCategory productCategory) {
         return dao.save(productCategory);
+    }
+    public List<ProductCategoryVO> findAllProductCategories() {
+
+        List<ProductCategory> productCategories = dao.findAll();
+
+//        for (int i = 0; i < productCategories.size(); i++) {
+//            ProductCategory productCategory = productCategories.get(i);
+//        }
+
+        List<ProductCategoryVO> results = new ArrayList<>();
+        for (ProductCategory productCategory : productCategories) {
+            ProductCategoryVO vo = new ProductCategoryVO();
+            vo.setCategoryId(productCategory.getCategoryId());
+            vo.setCategoryName(productCategory.getCategoryName());
+            vo.setCategoryType(productCategory.getCategoryType());
+            results.add(vo);
+        }
+
+        return results;
+    }
+    public Integer createProductCategory(ProductCategoryVO vo){
+        ProductCategory entity = new ProductCategory();
+        entity.setCategoryId(vo.getCategoryId());
+        entity.setCategoryName(vo.getCategoryName());
+        entity.setCategoryType(vo.getCategoryType());
+        ProductCategory newOne = dao.save(entity);
+        return newOne.getCategoryId();
     }
 }

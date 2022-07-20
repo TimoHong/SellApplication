@@ -21,12 +21,12 @@ public class OrderDetailRepositoryTest {
     @Test
     public void saveTest(){
         OrderDetail orderDetail = new OrderDetail();
-        orderDetail.setDetailId("123456789");
-        orderDetail.setOrderId("111111111");
+        orderDetail.setDetailId("123456789123");
+        orderDetail.setOrderId("1111111011");
         orderDetail.setProductIcon("http://test.jpg");
-        orderDetail.setProductName("beef");
-        orderDetail.setProductId("112315");
-        orderDetail.setProductPrice(new BigDecimal(1.2));
+        orderDetail.setProductName("lamb");
+        orderDetail.setProductId("112333");
+        orderDetail.setProductPrice(new BigDecimal(1.6));
         orderDetail.setProductQuantity(2);
 
         OrderDetail result = dao.save(orderDetail);

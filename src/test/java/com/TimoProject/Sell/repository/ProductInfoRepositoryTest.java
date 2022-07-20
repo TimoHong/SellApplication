@@ -22,11 +22,11 @@ public class ProductInfoRepositoryTest extends TestCase {
     @Transactional
     public void saveTest(){
         ProductInfo productInfo = new ProductInfo();
-        productInfo.setProductId((123456));
-        productInfo.setProductName("steak");
-        productInfo.setProductPrice(new BigDecimal(199.5));
+        productInfo.setProductId("12345");
+        productInfo.setProductName("chicken");
+        productInfo.setProductPrice(new BigDecimal(300.5));
         productInfo.setProductStock(100);
-        productInfo.setProductDescription("medium rare is the best");
+        productInfo.setProductDescription("well done is the best");
         productInfo.setProductIcon("http://exmaple.jpg");
         productInfo.setProductStatus(0);
         productInfo.setCategoryType(2);

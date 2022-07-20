@@ -12,9 +12,9 @@ import java.math.BigDecimal;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class InfoServiceImplTest extends ProductInfo  {
+public class ProductServiceImplTest extends ProductInfo  {
     @Autowired
-    private InfoServiceImpl infoService;
+    private ProductServiceImpl infoService;
     private ProductInfoRepository dao;
 
 
@@ -22,7 +22,7 @@ public class InfoServiceImplTest extends ProductInfo  {
     @Test
     public void testCreateProductInfo() {
         ProductInfo productInfo = new ProductInfo();
-        productInfo.setProductId((1236));
+        productInfo.setProductId("1236");
         productInfo.setProductName("steak1");
         productInfo.setProductPrice(new BigDecimal(1199.5));
         productInfo.setProductStock(100);

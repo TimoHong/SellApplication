@@ -5,6 +5,8 @@ import com.TimoProject.Sell.dataobject.OrderMaster;
 import com.TimoProject.Sell.dataobject.ProductInfo;
 import com.TimoProject.Sell.dto.CartDTO;
 import com.TimoProject.Sell.dto.OrderDTO;
+import com.TimoProject.Sell.enums.OrderStatusEnum;
+import com.TimoProject.Sell.enums.PayStatusEnum;
 import com.TimoProject.Sell.enums.ResultEnum;
 import com.TimoProject.Sell.exception.SellException;
 import com.TimoProject.Sell.repository.OrderDetailRepository;
@@ -12,12 +14,15 @@ import com.TimoProject.Sell.repository.OrderMasterRepository;
 import com.TimoProject.Sell.service.OrderService;
 import com.TimoProject.Sell.service.ProductService;
 import com.TimoProject.Sell.utils.KeyUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -25,6 +30,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class OrderServiceImpl implements OrderService {
     @Autowired
     private ProductService productService;
@@ -36,31 +42,43 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
+    @Transactional
     public OrderDTO create(OrderDTO orderDTO) {
         String orderId = KeyUtil.genUniqueKey();
         BigDecimal orderAmount = new BigDecimal(BigInteger.ZERO);
-        //1. search the product with price and quantity
-        for (OrderDetail orderDetail: orderDTO.getOrderDetailList()){
-            ProductInfo productInfo = productService.findOne(orderDetail.getProductId());
-            if (productInfo == null){
+
+//        List<CartDTO> cartDTOList = new ArrayList<>();
+
+        //search item
+        for (OrderDetail orderDetail: orderDTO.getOrderDetailList()) {
+            ProductInfo productInfo =  productService.findOne(orderDetail.getProductId());
+            if (productInfo == null) {
                 throw new SellException(ResultEnum.PRODUCT_NOT_EXIST);
             }
-           orderAmount= orderDetail.getProductPrice()
-                   .multiply(new BigDecimal(orderDetail.getProductQuantity()))
-                   .add(orderAmount);
+            //calculate total
+            orderAmount = productInfo.getProductPrice()
+                    .multiply(new BigDecimal(orderDetail.getProductQuantity()))
+                    .add(orderAmount);
+
             orderDetail.setDetailId(KeyUtil.genUniqueKey());
             orderDetail.setOrderId(orderId);
             BeanUtils.copyProperties(productInfo, orderDetail);
             orderDetailRepository.save(orderDetail);
+
+//
         }
+
+
+
         OrderMaster orderMaster = new OrderMaster();
+        BeanUtils.copyProperties(orderDTO, orderMaster);
         orderMaster.setOrderId(orderId);
         orderMaster.setOrderAmount(orderAmount);
-        BeanUtils.copyProperties(orderDTO, orderMaster);
+        orderMaster.setOrderStatus(OrderStatusEnum.NEW.getCode());
+        orderMaster.setPayStatus(PayStatusEnum.WAIT.getCode());
         orderMasterRepository.save(orderMaster);
 
-        List<CartDTO> cartDTOList = new ArrayList<>();
-        orderDTO.getOrderDetailList().stream().map(e ->
+        List<CartDTO> cartDTOList = orderDTO.getOrderDetailList().stream().map(e ->
                 new CartDTO(e.getProductId(), e.getProductQuantity())
         ).collect(Collectors.toList());
         productService.decreaseStock(cartDTOList);
@@ -79,8 +97,39 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public OrderDTO cancel(OrderDTO orderDTO) {
-        return null;
+        OrderMaster orderMaster = new OrderMaster();
+        BeanUtils.copyProperties(orderDTO, orderMaster);
+        //identify order status
+        if(!orderDTO.getOrderStatus().equals(OrderStatusEnum.NEW.getCode())){
+            log.error("cancel order: order status incorrect, orderId={}, orderStatus={}",orderDTO.getOrderId(),orderDTO.getOrderStatus());
+            throw new SellException(ResultEnum.ORDER_STATUS_ERROR);
+        }
+
+        //configure order
+        orderMaster.setOrderStatus(OrderStatusEnum.CANCEL.getCode());
+       OrderMaster updateResult =  orderMasterRepository.save(orderMaster);
+       if(updateResult == null){
+           log.error("cancel order: update fail, orderMaster={}",orderMaster);
+           throw new SellException(ResultEnum.ORDER_UPDATE_FAIL);
+       }
+       //return to inventory
+        if(CollectionUtils.isEmpty(orderDTO.getOrderDetailList())){
+            log.error("cancel order:order don't have order detail, orderDTO={}",orderDTO);
+            throw new SellException(ResultEnum.ORDER_DETAIL_EMPTY);
+        }
+        List<CartDTO> cartDTOList = orderDTO.getOrderDetailList().stream()
+                        .map(e -> new CartDTO(e.getProductId(),e.getProductQuantity()))
+                                .collect(Collectors.toList());
+        productService.increaseStock(cartDTOList);
+
+        // if is paid already, need to refund
+        if(orderDTO.getPayStatus().equals(PayStatusEnum.SUCCESS.getCode())){
+            //TODO
+        }
+
+        return orderDTO;
     }
 
     @Override

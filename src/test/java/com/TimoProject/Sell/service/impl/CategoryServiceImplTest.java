@@ -32,5 +32,11 @@ public class CategoryServiceImplTest {
         List<ProductCategory> productCategoryList = categoryService.findByCategoryTypeIn(Arrays.asList(2,3,4,5));
         Assert.assertNotEquals(0, productCategoryList.size());
     }
+    @Test
+    public void save() throws Exception {
+        ProductCategory productCategory = new ProductCategory("men choice", 10);
+        ProductCategory result = categoryService.save(productCategory);
+        Assert.assertNotNull(result);
+    }
 
 }

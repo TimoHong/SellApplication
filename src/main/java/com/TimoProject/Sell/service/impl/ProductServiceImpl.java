@@ -1,7 +1,10 @@
 package com.TimoProject.Sell.service.impl;
 
 import com.TimoProject.Sell.dataobject.ProductInfo;
+import com.TimoProject.Sell.dto.CartDTO;
 import com.TimoProject.Sell.enums.ProductStatusEnum;
+import com.TimoProject.Sell.enums.ResultEnum;
+import com.TimoProject.Sell.exception.SellException;
 import com.TimoProject.Sell.repository.ProductInfoRepository;
 import com.TimoProject.Sell.service.ProductService;
 import com.TimoProject.Sell.vo.ProductInfoVO;
@@ -10,12 +13,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.lang.constant.Constable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class InfoServiceImpl implements ProductService {
+public class ProductServiceImpl implements ProductService {
     @Autowired
     protected ProductInfoRepository dao;
     
@@ -37,6 +39,42 @@ public class InfoServiceImpl implements ProductService {
     public ProductInfo save(ProductInfo entity){
         return dao.save(entity);
     }
+
+    @Override
+    public void increaseStock(List<CartDTO> cartDTOList) {
+        for (CartDTO cartDTO: cartDTOList) {
+            ProductInfo productInfo = dao.getOne(cartDTO.getProductId());
+            if (productInfo == null) {
+                throw new SellException(ResultEnum.PRODUCT_NOT_EXIST);
+            }
+            Integer result = productInfo.getProductStock() + cartDTO.getProductQuantity();
+            productInfo.setProductStock(result);
+
+            dao.save(productInfo);
+        }
+
+    }
+
+    @Override
+    public void decreaseStock(List<CartDTO> cartDTOList) {
+        for (CartDTO cartDTO: cartDTOList) {
+            ProductInfo productInfo = dao.getOne(cartDTO.getProductId());
+            if (productInfo == null) {
+                throw new SellException(ResultEnum.PRODUCT_NOT_EXIST);
+            }
+
+            Integer result = productInfo.getProductStock() - cartDTO.getProductQuantity();
+            if (result < 0) {
+                throw new SellException(ResultEnum.PRODUCT_STOCK_ERROR);
+            }
+
+            productInfo.setProductStock(result);
+
+            dao.save(productInfo);
+        }
+
+    }
+
     public String createProductInfo(ProductInfoVO vo){
         ProductInfo entity = new ProductInfo();
         entity.setProductPrice(vo.getProductPrice());
