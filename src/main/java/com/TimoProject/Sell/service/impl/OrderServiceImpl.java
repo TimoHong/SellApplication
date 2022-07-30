@@ -27,6 +27,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -87,7 +88,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDTO findOne(String orderId) {  OrderMaster orderMaster = orderMasterRepository.findById(orderId).orElse(null);
+    public OrderDTO findOne(String orderId) {
+
+        OrderMaster orderMaster = orderMasterRepository.findById(orderId).orElse(null);
+
         if (orderMaster == null) {
             throw new SellException(ResultEnum.ORDER_NOT_EXIST);
         }
@@ -147,13 +151,43 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public OrderDTO finish(OrderDTO orderDTO) {
-        return null;
+
+        //
+        if (!orderDTO.getOrderStatus().equals(OrderStatusEnum.NEW.getCode())){
+            log.error("finish order:order status incorrect, orderId={}, orderStatus={}",orderDTO.getOrderId(),orderDTO.getOrderStatus());
+            throw new SellException(ResultEnum.ORDER_STATUS_ERROR);
+        }
+
+        //configure order status
+        orderDTO.setOrderStatus((OrderStatusEnum.FINISHED.getCode()));
+
+        OrderMaster orderMaster = new OrderMaster();
+        BeanUtils.copyProperties(orderDTO, orderMaster);
+
+        OrderMaster updateResult = orderMasterRepository.save(orderMaster);
+
+        return orderDTO;
     }
 
     @Override
+    @Transactional
     public OrderDTO paid(OrderDTO orderDTO) {
-        return null;
+        if (!orderDTO.getOrderStatus().equals(OrderStatusEnum.NEW.getCode())){
+            log.error("order status incorrect, orderId={}, orderStatus={}", orderDTO.getOrderId(),orderDTO.getOrderStatus());
+            throw new SellException(ResultEnum.ORDER_STATUS_ERROR);
+        }
+        if(!orderDTO.getPayStatus().equals(PayStatusEnum.WAIT.getCode())){
+            log.error("order pay status incorrect, orderDTO={}", orderDTO);
+            throw new SellException(ResultEnum.ORDER_PAY_STATUS_ERROR);
+        }
+        orderDTO.setPayStatus((PayStatusEnum.SUCCESS.getCode()));
+        OrderMaster orderMaster = new OrderMaster();
+        BeanUtils.copyProperties(orderDTO, orderMaster);
+        OrderMaster updateResult = orderMasterRepository.save(orderMaster);
+
+        return orderDTO;
     }
 
 
